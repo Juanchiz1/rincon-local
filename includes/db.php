@@ -1,0 +1,20 @@
+<?php
+// Conexión a la base de datos usando PDO.
+// Cambia estos valores según tu entorno local (XAMPP/Laragon suelen
+// usar usuario "root" y contraseña vacía por defecto).
+
+$host = 'localhost';
+$dbname = 'rincon_local';
+$usuario = 'root';
+$password = '';
+
+try {
+    $pdo = new PDO(
+        "mysql:host=$host;dbname=$dbname;charset=utf8mb4",
+        $usuario,
+        $password,
+        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+    );
+} catch (PDOException $e) {
+    die('Error de conexión: ' . $e->getMessage());
+}
