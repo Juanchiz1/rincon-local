@@ -1,0 +1,97 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: #f4f1ec;
+    color: #2b2b2b;
+}
+
+.cabecera {
+    background-color: #1f5c4f;
+    color: white;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.cabecera h1 {
+    font-size: 2.2rem;
+}
+
+.cabecera p {
+    margin-top: 8px;
+    opacity: 0.85;
+}
+
+.boton-agregar {
+    display: inline-block;
+    margin-top: 18px;
+    padding: 10px 20px;
+    background-color: #e8b04b;
+    color: #1f2f2b;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+}
+
+.boton-agregar:hover {
+    background-color: #d69f3d;
+}
+
+.contenedor-lugares {
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.tarjeta-lugar {
+    background-color: white;
+    border-radius: 10px;
+    padding: 18px;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: transform 0.15s ease;
+}
+
+.tarjeta-lugar:hover {
+    transform: translateY(-3px);
+}
+
+.categoria {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: #1f5c4f;
+    font-weight: bold;
+}
+
+.tarjeta-lugar h2 {
+    margin: 6px 0;
+    font-size: 1.2rem;
+}
+
+.direccion {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 12px;
+}
+
+.rating {
+    font-size: 0.95rem;
+}
+
+.total {
+    color: #888;
+    font-size: 0.8rem;
+}
+
+.sin-resenas {
+    color: #999;
+    font-style: italic;
+}
