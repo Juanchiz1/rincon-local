@@ -11,6 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $direccion = limpiar($_POST['direccion'] ?? '');
     $latitud = trim($_POST['latitud'] ?? '');
     $longitud = trim($_POST['longitud'] ?? '');
+    $nombreImagen = null;
 
     if ($nombre === '') {
         $errores[] = 'El nombre es obligatorio.';
@@ -25,15 +26,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errores[] = 'La longitud debe ser un número.';
     }
 
+    // Manejo de la imagen, solo si el usuario subió una.
+    if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+        $extensionesPermitidas = ['jpg', 'jpeg', 'png', 'webp'];
+        $extension = strtolower(pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION));
+        $tamanoMaximo = 5 * 1024 * 1024; // 5 MB
+
+        if (!in_array($extension, $extensionesPermitidas)) {
+            $errores[] = 'La imagen debe ser JPG, PNG o WEBP.';
+        } elseif ($_FILES['imagen']['size'] > $tamanoMaximo) {
+            $errores[] = 'La imagen no puede pesar más de 5MB.';
+        } else {
+            $nombreImagen = uniqid('lugar_') . '.' . $extension;
+            $rutaDestino = __DIR__ . '/uploads/' . $nombreImagen;
+
+            if (!move_uploaded_file($_FILES['imagen']['tmp_name'], $rutaDestino)) {
+                $errores[] = 'No se pudo guardar la imagen, intenta de nuevo.';
+                $nombreImagen = null;
+            }
+        }
+    }
+
     if (count($errores) === 0) {
         $stmt = $pdo->prepare(
-            "INSERT INTO lugares (nombre, categoria, direccion, latitud, longitud)
-             VALUES (?, ?, ?, ?, ?)"
+            "INSERT INTO lugares (nombre, categoria, direccion, imagen, latitud, longitud)
+             VALUES (?, ?, ?, ?, ?, ?)"
         );
         $stmt->execute([
             $nombre,
             $categoria,
             $direccion,
+            $nombreImagen,
             $latitud !== '' ? $latitud : null,
             $longitud !== '' ? $longitud : null,
         ]);
@@ -68,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </ul>
             <?php endif; ?>
 
-            <form method="POST" class="formulario-lugar">
+            <form method="POST" enctype="multipart/form-data" class="formulario-lugar">
                 <label for="nombre">Nombre del lugar</label>
                 <input type="text" id="nombre" name="nombre" value="<?= $_POST['nombre'] ?? '' ?>" required>
 
@@ -77,6 +100,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <label for="direccion">Dirección</label>
                 <input type="text" id="direccion" name="direccion" value="<?= $_POST['direccion'] ?? '' ?>">
+
+                <label for="imagen">Foto del lugar (opcional)</label>
+                <input type="file" id="imagen" name="imagen" accept="image/*">
 
                 <label for="latitud">Latitud (opcional)</label>
                 <input type="text" id="latitud" name="latitud" placeholder="8.7500" value="<?= $_POST['latitud'] ?? '' ?>">

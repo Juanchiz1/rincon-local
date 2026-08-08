@@ -35,20 +35,27 @@ unset($lugar);
             <p>Todavía no hay lugares registrados.</p>
         <?php else: ?>
             <?php foreach ($lugares as $lugar): ?>
-                <a href="lugar.php?id=<?= $lugar['id'] ?>" class="tarjeta-lugar">
-                    <span class="categoria"><?= limpiar($lugar['categoria']) ?></span>
-                    <h2><?= limpiar($lugar['nombre']) ?></h2>
-                    <p class="direccion"><?= limpiar($lugar['direccion']) ?></p>
-                    <div class="rating">
-                        <?php if ($lugar['total_resenas'] > 0): ?>
-                            ⭐ <?= $lugar['promedio'] ?> / 5
-                            <span class="total">(<?= $lugar['total_resenas'] ?> reseñas)</span>
-                        <?php else: ?>
-                            <span class="sin-resenas">Sin reseñas todavía</span>
-                        <?php endif; ?>
-                    </div>
-                </a>
-            <?php endforeach; ?>
+    <a href="lugar.php?id=<?= $lugar['id'] ?>" class="tarjeta-lugar">
+        <div class="imagen-lugar <?= $lugar['imagen'] ? '' : 'sin-imagen' ?>"
+             <?php if ($lugar['imagen']): ?>
+                style="background-image: url('uploads/<?= limpiar($lugar['imagen']) ?>');"
+             <?php endif; ?>>
+            <span class="categoria-badge"><?= limpiar($lugar['categoria']) ?></span>
+        </div>
+        <div class="info-lugar">
+            <h2><?= limpiar($lugar['nombre']) ?></h2>
+            <p class="direccion"><?= limpiar($lugar['direccion']) ?></p>
+            <div class="rating">
+                <?php if ($lugar['total_resenas'] > 0): ?>
+                    ⭐ <?= $lugar['promedio'] ?> / 5
+                    <span class="total">(<?= $lugar['total_resenas'] ?> reseñas)</span>
+                <?php else: ?>
+                    <span class="sin-resenas">Sin reseñas todavía</span>
+                <?php endif; ?>
+            </div>
+        </div>
+    </a>
+<?php endforeach; ?>
         <?php endif; ?>
     </main>
 </body>

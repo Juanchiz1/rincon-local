@@ -6,6 +6,7 @@ CREATE TABLE lugares (
     nombre VARCHAR(120) NOT NULL,
     categoria VARCHAR(60) NOT NULL,
     direccion VARCHAR(200),
+    imagen VARCHAR(255) DEFAULT NULL,
     latitud DECIMAL(10, 8),
     longitud DECIMAL(11, 8),
     creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
