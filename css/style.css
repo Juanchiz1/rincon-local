@@ -95,3 +95,63 @@ body {
     color: #999;
     font-style: italic;
 }
+
+.contenedor-formulario {
+    max-width: 500px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.formulario-lugar {
+    display: flex;
+    flex-direction: column;
+    background: white;
+    padding: 24px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.formulario-lugar label {
+    margin-top: 14px;
+    margin-bottom: 6px;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.formulario-lugar input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+.formulario-lugar button {
+    margin-top: 22px;
+    padding: 12px;
+    background-color: #1f5c4f;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.formulario-lugar button:hover {
+    background-color: #164039;
+}
+
+.mensaje-error {
+    background-color: #fbdcdc;
+    color: #7a1f1f;
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    list-style-position: inside;
+}
+
+.mensaje-exito {
+    background-color: #d9f2e6;
+    color: #1f5c4f;
+    padding: 14px 16px;
+    border-radius: 6px;
+}
