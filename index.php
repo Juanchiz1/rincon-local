@@ -29,6 +29,7 @@ unset($lugar);
         <p>Descubre y reseña los mejores rincones de Montería</p>
         <a href="agregar_lugar.php" class="boton-agregar">+ Agregar lugar</a>
     </header>
+    <div class="franja-vueltiada"></div>
 
     <main class="contenedor-lugares">
         <?php if (count($lugares) === 0): ?>

@@ -79,6 +79,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <a href="index.php" class="boton-agregar">← Volver al listado</a>
     </header>
 
+    <div class="franja-vueltiada"></div>
+
     <main class="contenedor-formulario">
         <?php if ($exito): ?>
             <p class="mensaje-exito">Lugar agregado correctamente. <a href="index.php">Ver listado</a></p>

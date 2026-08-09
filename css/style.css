@@ -5,12 +5,14 @@
 }
 
 :root {
-    --verde-sinu: #1f5c4f;
-    --verde-oscuro: #12332c;
-    --terracota: #c96f4a;
-    --dorado: #e8b04b;
-    --crema: #f7f2ea;
-    --texto: #2b2b2b;
+    --verde-sinu: #4f7942;     
+    --verde-oscuro: #2e4a26;   
+    --terracota: #c1432e;       
+    --dorado: #e8a93e;          
+    --crema: #f5ecd9;           
+    --negro-vueltiao: #2b2420;  
+    --azul-rio: #4e8fa6;       
+    --texto: #2b2420;
 }
 
 body {
@@ -20,7 +22,11 @@ body {
 }
 
 .cabecera {
-    background: linear-gradient(135deg, var(--verde-sinu), var(--verde-oscuro));
+    background:
+        linear-gradient(135deg, rgba(46, 74, 38, 0.88), rgba(43, 36, 32, 0.9)),
+        url('assets/ronda-del-sinu.jpg');
+    background-size: cover;
+    background-position: center;
     color: white;
     padding: 50px 20px 70px;
     text-align: center;
@@ -222,4 +228,15 @@ body {
     color: var(--verde-sinu);
     padding: 14px 16px;
     border-radius: 8px;
+}
+
+.franja-vueltiada {
+    height: 10px;
+    background: repeating-linear-gradient(
+        45deg,
+        var(--negro-vueltiao),
+        var(--negro-vueltiao) 12px,
+        var(--crema) 12px,
+        var(--crema) 24px
+    );
 }
