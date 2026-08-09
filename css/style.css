@@ -240,3 +240,159 @@ body {
         var(--crema) 24px
     );
 }
+
+.cabecera-lugar {
+    background-color: var(--negro-vueltiao);
+    background-size: cover;
+    background-position: center;
+    min-height: 260px;
+    display: flex;
+    align-items: flex-end;
+}
+
+.overlay-cabecera-lugar {
+    width: 100%;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.1) 70%);
+    color: white;
+    padding: 60px 20px 30px;
+    text-align: center;
+}
+
+.volver-lugar {
+    display: inline-block;
+    color: white;
+    text-decoration: none;
+    opacity: 0.85;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+}
+
+.overlay-cabecera-lugar h1 {
+    font-size: 1.9rem;
+    margin: 8px 0 4px;
+}
+
+.promedio-grande {
+    margin-top: 10px;
+    font-size: 1.1rem;
+}
+
+.promedio-grande span {
+    opacity: 0.8;
+    font-size: 0.85rem;
+}
+
+.detalle-lugar {
+    max-width: 700px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.mapa-lugar {
+    margin-bottom: 30px;
+}
+
+.formulario-resena,
+.lista-resenas {
+    margin-bottom: 40px;
+}
+
+.formulario-resena h2,
+.lista-resenas h2 {
+    margin-bottom: 14px;
+    color: var(--verde-oscuro);
+}
+
+.estrellas-input {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 4px;
+    margin: 4px 0 4px;
+}
+
+.estrellas-input input {
+    display: none;
+}
+
+.estrellas-input label {
+    font-size: 1.8rem;
+    color: #d8d0c0;
+    cursor: pointer;
+    transition: color 0.1s ease;
+}
+
+.estrellas-input input:checked ~ label,
+.estrellas-input label:hover,
+.estrellas-input label:hover ~ label {
+    color: var(--dorado);
+}
+
+.emojis-input {
+    display: flex;
+    gap: 10px;
+    margin: 4px 0 4px;
+}
+
+.emojis-input input {
+    display: none;
+}
+
+.emojis-input label {
+    font-size: 1.6rem;
+    cursor: pointer;
+    opacity: 0.4;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.emojis-input input:checked + label {
+    opacity: 1;
+    transform: scale(1.25);
+}
+
+.formulario-resena textarea {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 1rem;
+    resize: vertical;
+}
+
+.tarjeta-resena {
+    background: white;
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 14px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.cabecera-resena {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.emoji-resena {
+    font-size: 1.3rem;
+}
+
+.detalle-ratings {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 0.85rem;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.comentario-resena {
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+}
+
+.tarjeta-resena time {
+    font-size: 0.75rem;
+    color: #999;
+}
