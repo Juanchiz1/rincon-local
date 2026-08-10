@@ -11,6 +11,9 @@ if (!$id || !is_numeric($id)) {
 $stmt = $pdo->prepare("SELECT * FROM lugares WHERE id = ?");
 $stmt->execute([$id]);
 $lugar = $stmt->fetch();
+$stmtFotos = $pdo->prepare("SELECT * FROM lugares_fotos WHERE lugar_id = ? ORDER BY orden ASC");
+$stmtFotos->execute([$id]);
+$fotosGaleria = $stmtFotos->fetchAll();
 
 if (!$lugar) {
     die('Lugar no encontrado.');
@@ -95,6 +98,25 @@ $promedio = promedioResenas($resenas);
 
     <main class="detalle-lugar">
         <?php if ($lugar['latitud'] && $lugar['longitud']): ?>
+        <?php if ($lugar['descripcion']): ?>
+<section class="descripcion-lugar">
+    <p><?= nl2br($lugar['descripcion']) ?></p>
+</section>
+<?php endif; ?>
+
+<?php if ($lugar['horario_apertura'] && $lugar['horario_cierre']): ?>
+<section class="horario-lugar">
+    🕒 <?= date('g:i A', strtotime($lugar['horario_apertura'])) ?> — <?= date('g:i A', strtotime($lugar['horario_cierre'])) ?>
+</section>
+<?php endif; ?>
+
+<?php if (count($fotosGaleria) > 0): ?>
+<section class="galeria-lugar">
+    <?php foreach ($fotosGaleria as $foto): ?>
+        <img src="<?= limpiar($foto['ruta_imagen']) ?>" alt="<?= limpiar($lugar['nombre']) ?>">
+    <?php endforeach; ?>
+</section>
+<?php endif; ?>    
         <section class="mapa-lugar">
             <iframe
                 width="100%"
@@ -195,6 +217,13 @@ $promedio = promedioResenas($resenas);
                 <?php endforeach; ?>
             <?php endif; ?>
         </section>
+
+        <?php if ($lugar['recomendaciones']): ?>
+<section class="recomendaciones-lugar">
+    <h2>Recomendaciones</h2>
+    <p><?= nl2br($lugar['recomendaciones']) ?></p>
+</section>
+<?php endif; ?>
     </main>
 </body>
 </html>

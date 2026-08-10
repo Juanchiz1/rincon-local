@@ -396,3 +396,50 @@ body {
     font-size: 0.75rem;
     color: #999;
 }
+
+.descripcion-lugar {
+    background: white;
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    line-height: 1.5;
+}
+
+.horario-lugar {
+    display: inline-block;
+    background-color: var(--dorado);
+    color: var(--negro-vueltiao);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
+
+.galeria-lugar {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 8px;
+    margin-bottom: 24px;
+}
+
+.galeria-lugar img {
+    width: 100%;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.recomendaciones-lugar {
+    background: linear-gradient(135deg, var(--verde-sinu), var(--verde-oscuro));
+    color: white;
+    border-radius: 12px;
+    padding: 18px 20px;
+    line-height: 1.5;
+}
+
+.recomendaciones-lugar h2 {
+    margin-bottom: 8px;
+    color: var(--crema);
+}
