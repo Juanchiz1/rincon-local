@@ -43,6 +43,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!move_uploaded_file($_FILES['imagen']['tmp_name'], $rutaDestino)) {
                 $errores[] = 'No se pudo guardar la imagen, intenta de nuevo.';
                 $nombreImagen = null;
+            }else {
+                $nombreImagen = 'uploads/' . $nombreImagen;
             }
         }
     }

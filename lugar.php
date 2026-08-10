@@ -80,7 +80,7 @@ $promedio = promedioResenas($resenas);
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <header class="cabecera-lugar" <?php if ($lugar['imagen']): ?>style="background-image: url('uploads/<?= limpiar($lugar['imagen']) ?>');"<?php endif; ?>>
+    <header class="cabecera-lugar" <?php if ($lugar['imagen']): ?>style="background-image: url('<?= limpiar($lugar['imagen']) ?>');"<?php endif; ?>>
         <div class="overlay-cabecera-lugar">
             <a href="index.php" class="volver-lugar">← Volver al listado</a>
             <span class="categoria-badge"><?= limpiar($lugar['categoria']) ?></span>
@@ -102,7 +102,7 @@ $promedio = promedioResenas($resenas);
                 style="border:0; border-radius: 12px;"
                 loading="lazy"
                 referrerpolicy="no-referrer-when-downgrade"
-                src="https://www.google.com/maps?q=<?= $lugar['latitud'] ?>,<?= $lugar['longitud'] ?>&output=embed">
+                src="https://www.google.com/maps?q=<?= $lugar['latitud'] ?>,<?= $lugar['longitud'] ?>&z=17&output=embed">
             </iframe>
         </section>
         <?php endif; ?>

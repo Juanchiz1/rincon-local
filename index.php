@@ -39,7 +39,7 @@ unset($lugar);
     <a href="lugar.php?id=<?= $lugar['id'] ?>" class="tarjeta-lugar">
         <div class="imagen-lugar <?= $lugar['imagen'] ? '' : 'sin-imagen' ?>"
              <?php if ($lugar['imagen']): ?>
-                style="background-image: url('uploads/<?= limpiar($lugar['imagen']) ?>');"
+                style="background-image: url('<?= limpiar($lugar['imagen']) ?>');"
              <?php endif; ?>>
             <span class="categoria-badge"><?= limpiar($lugar['categoria']) ?></span>
         </div>
