@@ -134,7 +134,7 @@ $promediosCategorias = promediosPorCategoria($resenas);
 <?php if (count($fotosGaleria) > 0): ?>
 <section class="galeria-lugar">
     <?php foreach ($fotosGaleria as $foto): ?>
-        <img src="<?= limpiar($foto['ruta_imagen']) ?>" alt="<?= limpiar($lugar['nombre']) ?>">
+        <img src="<?= limpiar($foto['ruta_imagen']) ?>" alt="<?= limpiar($lugar['nombre']) ?>" class="foto-clickeable">
     <?php endforeach; ?>
 </section>
 <?php endif; ?>    
@@ -256,7 +256,7 @@ $promediosCategorias = promediosPorCategoria($resenas);
                             <span>Ambiente: <?= str_repeat('★', $resena['rating_ambiente']) . str_repeat('☆', 5 - $resena['rating_ambiente']) ?></span>
                         </div>
                         <?php if ($resena['imagen']): ?>
-                            <img src="<?= limpiar($resena['imagen']) ?>" alt="Foto de la reseña" class="foto-resena">
+                            <img src="<?= limpiar($resena['imagen']) ?>" alt="Foto de la reseña" class="foto-resena foto-clickeable">
                         <?php endif; ?>
                         <?php if ($resena['comentario']): ?>
                             <p class="comentario-resena"><?= $resena['comentario'] ?></p>
@@ -274,5 +274,12 @@ $promediosCategorias = promediosPorCategoria($resenas);
 </section>
 <?php endif; ?>
     </main>
+<div id="lightbox" class="lightbox oculto">
+        <span class="cerrar-lightbox">&times;</span>
+        <img id="lightbox-img" src="" alt="Foto ampliada">
+    </div>
+
+    <script src="js/app.js"></script>
+</body>    
 </body>
 </html>

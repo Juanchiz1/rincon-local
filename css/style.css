@@ -503,3 +503,55 @@ body {
     margin: 6px 0 10px;
     display: block;
 }
+
+.antes-de-aparecer {
+    opacity: 0;
+    transform: translateY(15px);
+}
+
+.tarjeta-lugar.visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.foto-clickeable {
+    cursor: zoom-in;
+}
+
+.lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(18, 51, 44, 0.92);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    cursor: zoom-out;
+    animation: aparecer-lightbox 0.2s ease;
+}
+
+.lightbox.oculto {
+    display: none;
+}
+
+.lightbox img {
+    max-width: 90%;
+    max-height: 85%;
+    border-radius: 10px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+
+.cerrar-lightbox {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: white;
+    font-size: 2.2rem;
+    cursor: pointer;
+}
+
+@keyframes aparecer-lightbox {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}

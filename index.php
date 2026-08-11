@@ -59,5 +59,6 @@ unset($lugar);
 <?php endforeach; ?>
         <?php endif; ?>
     </main>
+    <script src="js/app.js"></script>
 </body>
 </html>
