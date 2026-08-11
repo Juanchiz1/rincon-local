@@ -32,6 +32,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ratingComida = $_POST['rating_comida'] ?? '';
     $ratingServicio = $_POST['rating_servicio'] ?? '';
     $ratingAmbiente = $_POST['rating_ambiente'] ?? '';
+    $imagenResena = null;
+
+    if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+        $extensionesPermitidas = ['jpg', 'jpeg', 'png', 'webp'];
+        $extension = strtolower(pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION));
+        $tamanoMaximo = 5 * 1024 * 1024;
+
+        if (!in_array($extension, $extensionesPermitidas)) {
+            $errores[] = 'La foto de la reseña debe ser JPG, PNG o WEBP.';
+        } elseif ($_FILES['imagen']['size'] > $tamanoMaximo) {
+            $errores[] = 'La foto de la reseña no puede pesar más de 5MB.';
+        } else {
+            $nombreArchivo = uniqid('resena_') . '.' . $extension;
+            $rutaDestino = __DIR__ . '/uploads/' . $nombreArchivo;
+
+            if (move_uploaded_file($_FILES['imagen']['tmp_name'], $rutaDestino)) {
+                $imagenResena = 'uploads/' . $nombreArchivo;
+            }
+        }
+    }
 
     if ($autor === '') {
         $errores[] = 'Tu nombre es obligatorio.';
@@ -48,20 +68,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (count($errores) === 0) {
         $stmt = $pdo->prepare(
-            "INSERT INTO resenas (lugar_id, autor, comentario, emoji, rating_comida, rating_servicio, rating_ambiente)
-             VALUES (?, ?, ?, ?, ?, ?, ?)"
+            "INSERT INTO resenas (lugar_id, autor, comentario, emoji, imagen, rating_comida, rating_servicio, rating_ambiente)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
         );
         $stmt->execute([
             $lugar['id'],
             $autor,
             $comentario,
             $emoji !== '' ? $emoji : null,
+            $imagenResena,
             $ratingComida,
             $ratingServicio,
             $ratingAmbiente,
         ]);
 
-        // Redirigimos para evitar que al recargar la página se reenvíe el formulario.
         header("Location: lugar.php?id={$lugar['id']}&exito=1");
         exit;
     }
@@ -73,6 +93,7 @@ $stmtResenas = $pdo->prepare("SELECT * FROM resenas WHERE lugar_id = ? ORDER BY 
 $stmtResenas->execute([$lugar['id']]);
 $resenas = $stmtResenas->fetchAll();
 $promedio = promedioResenas($resenas);
+$promediosCategorias = promediosPorCategoria($resenas);
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -127,6 +148,29 @@ $promedio = promedioResenas($resenas);
                 src="https://www.google.com/maps?q=<?= $lugar['latitud'] ?>,<?= $lugar['longitud'] ?>&z=17&output=embed">
             </iframe>
         </section>
+        <?php if (count($resenas) > 0): ?>
+<section class="resumen-calificaciones">
+    <h2>Calificaciones</h2>
+
+    <div class="barra-categoria">
+        <span class="etiqueta-barra">Comida</span>
+        <div class="barra-fondo"><div class="barra-relleno" style="width: <?= ($promediosCategorias['comida'] / 5) * 100 ?>%"></div></div>
+        <span class="valor-barra"><?= $promediosCategorias['comida'] ?></span>
+    </div>
+
+    <div class="barra-categoria">
+        <span class="etiqueta-barra">Servicio</span>
+        <div class="barra-fondo"><div class="barra-relleno" style="width: <?= ($promediosCategorias['servicio'] / 5) * 100 ?>%"></div></div>
+        <span class="valor-barra"><?= $promediosCategorias['servicio'] ?></span>
+    </div>
+
+    <div class="barra-categoria">
+        <span class="etiqueta-barra">Ambiente</span>
+        <div class="barra-fondo"><div class="barra-relleno" style="width: <?= ($promediosCategorias['ambiente'] / 5) * 100 ?>%"></div></div>
+        <span class="valor-barra"><?= $promediosCategorias['ambiente'] ?></span>
+    </div>
+</section>
+<?php endif; ?>
         <?php endif; ?>
 
         <section class="formulario-resena">
@@ -144,8 +188,8 @@ $promedio = promedioResenas($resenas);
                 </ul>
             <?php endif; ?>
 
-            <form method="POST" class="formulario-lugar">
-                <label for="autor">Tu nombre</label>
+            <form method="POST" enctype="multipart/form-data" class="formulario-lugar">
+    <label for="autor">Tu nombre</label>
                 <input type="text" id="autor" name="autor" required>
 
                 <label>Comida / producto</label>
@@ -185,6 +229,8 @@ $promedio = promedioResenas($resenas);
 
                 <label for="comentario">Comentario (opcional)</label>
                 <textarea id="comentario" name="comentario" rows="3"></textarea>
+                  <label for="imagen_resena">Agrega una foto (opcional)</label>
+                <input type="file" id="imagen_resena" name="imagen" accept="image/*">
 
                 <button type="submit">Publicar reseña</button>
             </form>
@@ -209,6 +255,9 @@ $promedio = promedioResenas($resenas);
                             <span>Servicio: <?= str_repeat('★', $resena['rating_servicio']) . str_repeat('☆', 5 - $resena['rating_servicio']) ?></span>
                             <span>Ambiente: <?= str_repeat('★', $resena['rating_ambiente']) . str_repeat('☆', 5 - $resena['rating_ambiente']) ?></span>
                         </div>
+                        <?php if ($resena['imagen']): ?>
+                            <img src="<?= limpiar($resena['imagen']) ?>" alt="Foto de la reseña" class="foto-resena">
+                        <?php endif; ?>
                         <?php if ($resena['comentario']): ?>
                             <p class="comentario-resena"><?= $resena['comentario'] ?></p>
                         <?php endif; ?>

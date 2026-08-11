@@ -36,3 +36,28 @@ function distanciaKm($lat1, $lon1, $lat2, $lon2)
 
     return round($radioTierra * $c, 2);
 }
+
+function promediosPorCategoria(array $resenas)
+{
+    if (count($resenas) === 0) {
+        return ['comida' => 0, 'servicio' => 0, 'ambiente' => 0];
+    }
+
+    $sumaComida = 0;
+    $sumaServicio = 0;
+    $sumaAmbiente = 0;
+
+    foreach ($resenas as $r) {
+        $sumaComida += $r['rating_comida'];
+        $sumaServicio += $r['rating_servicio'];
+        $sumaAmbiente += $r['rating_ambiente'];
+    }
+
+    $total = count($resenas);
+
+    return [
+        'comida' => round($sumaComida / $total, 1),
+        'servicio' => round($sumaServicio / $total, 1),
+        'ambiente' => round($sumaAmbiente / $total, 1),
+    ];
+}

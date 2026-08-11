@@ -443,3 +443,63 @@ body {
     margin-bottom: 8px;
     color: var(--crema);
 }
+
+.resumen-calificaciones {
+    background: white;
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.resumen-calificaciones h2 {
+    margin-bottom: 12px;
+    color: var(--verde-oscuro);
+    font-size: 1.15rem;
+}
+
+.barra-categoria {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.etiqueta-barra {
+    width: 75px;
+    font-size: 0.85rem;
+    color: #555;
+    flex-shrink: 0;
+}
+
+.barra-fondo {
+    flex: 1;
+    height: 10px;
+    background-color: #ecebe6;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.barra-relleno {
+    height: 100%;
+    background: linear-gradient(90deg, var(--dorado), var(--terracota));
+    border-radius: 6px;
+    transition: width 0.3s ease;
+}
+
+.valor-barra {
+    width: 28px;
+    text-align: right;
+    font-weight: bold;
+    font-size: 0.85rem;
+    color: var(--verde-oscuro);
+    flex-shrink: 0;
+}
+
+.foto-resena {
+    width: 100%;
+    max-width: 220px;
+    border-radius: 8px;
+    margin: 6px 0 10px;
+    display: block;
+}
