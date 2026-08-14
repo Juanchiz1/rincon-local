@@ -11,83 +11,16 @@ if (!$id || !is_numeric($id)) {
 $stmt = $pdo->prepare("SELECT * FROM lugares WHERE id = ?");
 $stmt->execute([$id]);
 $lugar = $stmt->fetch();
-$stmtFotos = $pdo->prepare("SELECT * FROM lugares_fotos WHERE lugar_id = ? ORDER BY orden ASC");
-$stmtFotos->execute([$id]);
-$fotosGaleria = $stmtFotos->fetchAll();
 
 if (!$lugar) {
     die('Lugar no encontrado.');
 }
 
-$errores = [];
-$exito = false;
+$stmtFotos = $pdo->prepare("SELECT * FROM lugares_fotos WHERE lugar_id = ? ORDER BY orden ASC");
+$stmtFotos->execute([$id]);
+$fotosGaleria = $stmtFotos->fetchAll();
 
-// Emojis permitidos, para no guardar cualquier texto en esa columna.
 $emojisPermitidos = ['😍', '😊', '😐', '😕', '😡'];
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $autor = limpiar($_POST['autor'] ?? '');
-    $comentario = limpiar($_POST['comentario'] ?? '');
-    $emoji = $_POST['emoji'] ?? '';
-    $ratingComida = $_POST['rating_comida'] ?? '';
-    $ratingServicio = $_POST['rating_servicio'] ?? '';
-    $ratingAmbiente = $_POST['rating_ambiente'] ?? '';
-    $imagenResena = null;
-
-    if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
-        $extensionesPermitidas = ['jpg', 'jpeg', 'png', 'webp'];
-        $extension = strtolower(pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION));
-        $tamanoMaximo = 5 * 1024 * 1024;
-
-        if (!in_array($extension, $extensionesPermitidas)) {
-            $errores[] = 'La foto de la reseña debe ser JPG, PNG o WEBP.';
-        } elseif ($_FILES['imagen']['size'] > $tamanoMaximo) {
-            $errores[] = 'La foto de la reseña no puede pesar más de 5MB.';
-        } else {
-            $nombreArchivo = uniqid('resena_') . '.' . $extension;
-            $rutaDestino = __DIR__ . '/uploads/' . $nombreArchivo;
-
-            if (move_uploaded_file($_FILES['imagen']['tmp_name'], $rutaDestino)) {
-                $imagenResena = 'uploads/' . $nombreArchivo;
-            }
-        }
-    }
-
-    if ($autor === '') {
-        $errores[] = 'Tu nombre es obligatorio.';
-    }
-    foreach (['rating_comida' => $ratingComida, 'rating_servicio' => $ratingServicio, 'rating_ambiente' => $ratingAmbiente] as $campo => $valor) {
-        if ($valor === '' || !in_array($valor, ['1', '2', '3', '4', '5'])) {
-            $errores[] = 'Debes calificar todas las categorías con estrellas.';
-            break;
-        }
-    }
-    if ($emoji !== '' && !in_array($emoji, $emojisPermitidos)) {
-        $emoji = '';
-    }
-
-    if (count($errores) === 0) {
-        $stmt = $pdo->prepare(
-            "INSERT INTO resenas (lugar_id, autor, comentario, emoji, imagen, rating_comida, rating_servicio, rating_ambiente)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
-        );
-        $stmt->execute([
-            $lugar['id'],
-            $autor,
-            $comentario,
-            $emoji !== '' ? $emoji : null,
-            $imagenResena,
-            $ratingComida,
-            $ratingServicio,
-            $ratingAmbiente,
-        ]);
-
-        header("Location: lugar.php?id={$lugar['id']}&exito=1");
-        exit;
-    }
-}
-
-$exito = isset($_GET['exito']);
 
 $stmtResenas = $pdo->prepare("SELECT * FROM resenas WHERE lugar_id = ? ORDER BY creado_en DESC");
 $stmtResenas->execute([$lugar['id']]);
@@ -110,34 +43,36 @@ $promediosCategorias = promediosPorCategoria($resenas);
             <span class="categoria-badge"><?= limpiar($lugar['categoria']) ?></span>
             <h1><?= limpiar($lugar['nombre']) ?></h1>
             <p><?= limpiar($lugar['direccion']) ?></p>
-            <?php if (count($resenas) > 0): ?>
-                <p class="promedio-grande">⭐ <?= $promedio ?> / 5 <span>(<?= count($resenas) ?> reseñas)</span></p>
-            <?php endif; ?>
+            <p class="promedio-grande" id="promedio-grande" <?= count($resenas) === 0 ? 'style="display:none;"' : '' ?>>
+                ⭐ <span id="valor-promedio-general"><?= $promedio ?></span> / 5
+                <span>(<span id="conteo-resenas-cabecera"><?= count($resenas) ?></span> reseñas)</span>
+            </p>
         </div>
     </header>
     <div class="franja-vueltiada"></div>
 
     <main class="detalle-lugar">
-        <?php if ($lugar['latitud'] && $lugar['longitud']): ?>
         <?php if ($lugar['descripcion']): ?>
-<section class="descripcion-lugar">
-    <p><?= nl2br($lugar['descripcion']) ?></p>
-</section>
-<?php endif; ?>
+        <section class="descripcion-lugar">
+            <p><?= nl2br($lugar['descripcion']) ?></p>
+        </section>
+        <?php endif; ?>
 
-<?php if ($lugar['horario_apertura'] && $lugar['horario_cierre']): ?>
-<section class="horario-lugar">
-    🕒 <?= date('g:i A', strtotime($lugar['horario_apertura'])) ?> — <?= date('g:i A', strtotime($lugar['horario_cierre'])) ?>
-</section>
-<?php endif; ?>
+        <?php if ($lugar['horario_apertura'] && $lugar['horario_cierre']): ?>
+        <section class="horario-lugar">
+            🕒 <?= date('g:i A', strtotime($lugar['horario_apertura'])) ?> — <?= date('g:i A', strtotime($lugar['horario_cierre'])) ?>
+        </section>
+        <?php endif; ?>
 
-<?php if (count($fotosGaleria) > 0): ?>
-<section class="galeria-lugar">
-    <?php foreach ($fotosGaleria as $foto): ?>
-        <img src="<?= limpiar($foto['ruta_imagen']) ?>" alt="<?= limpiar($lugar['nombre']) ?>" class="foto-clickeable">
-    <?php endforeach; ?>
-</section>
-<?php endif; ?>    
+        <?php if (count($fotosGaleria) > 0): ?>
+        <section class="galeria-lugar">
+            <?php foreach ($fotosGaleria as $foto): ?>
+                <img src="<?= limpiar($foto['ruta_imagen']) ?>" alt="<?= limpiar($lugar['nombre']) ?>" class="foto-clickeable">
+            <?php endforeach; ?>
+        </section>
+        <?php endif; ?>
+
+        <?php if ($lugar['latitud'] && $lugar['longitud']): ?>
         <section class="mapa-lugar">
             <iframe
                 width="100%"
@@ -148,48 +83,39 @@ $promediosCategorias = promediosPorCategoria($resenas);
                 src="https://www.google.com/maps?q=<?= $lugar['latitud'] ?>,<?= $lugar['longitud'] ?>&z=17&output=embed">
             </iframe>
         </section>
-        <?php if (count($resenas) > 0): ?>
-<section class="resumen-calificaciones">
-    <h2>Calificaciones</h2>
-
-    <div class="barra-categoria">
-        <span class="etiqueta-barra">Comida</span>
-        <div class="barra-fondo"><div class="barra-relleno" style="width: <?= ($promediosCategorias['comida'] / 5) * 100 ?>%"></div></div>
-        <span class="valor-barra"><?= $promediosCategorias['comida'] ?></span>
-    </div>
-
-    <div class="barra-categoria">
-        <span class="etiqueta-barra">Servicio</span>
-        <div class="barra-fondo"><div class="barra-relleno" style="width: <?= ($promediosCategorias['servicio'] / 5) * 100 ?>%"></div></div>
-        <span class="valor-barra"><?= $promediosCategorias['servicio'] ?></span>
-    </div>
-
-    <div class="barra-categoria">
-        <span class="etiqueta-barra">Ambiente</span>
-        <div class="barra-fondo"><div class="barra-relleno" style="width: <?= ($promediosCategorias['ambiente'] / 5) * 100 ?>%"></div></div>
-        <span class="valor-barra"><?= $promediosCategorias['ambiente'] ?></span>
-    </div>
-</section>
-<?php endif; ?>
         <?php endif; ?>
+
+        <section class="resumen-calificaciones" id="resumen-calificaciones" <?= count($resenas) === 0 ? 'style="display:none;"' : '' ?>>
+            <h2>Calificaciones</h2>
+
+            <div class="barra-categoria">
+                <span class="etiqueta-barra">Comida</span>
+                <div class="barra-fondo"><div class="barra-relleno" id="barra-comida" style="width: <?= ($promediosCategorias['comida'] / 5) * 100 ?>%"></div></div>
+                <span class="valor-barra" id="valor-comida"><?= $promediosCategorias['comida'] ?></span>
+            </div>
+
+            <div class="barra-categoria">
+                <span class="etiqueta-barra">Servicio</span>
+                <div class="barra-fondo"><div class="barra-relleno" id="barra-servicio" style="width: <?= ($promediosCategorias['servicio'] / 5) * 100 ?>%"></div></div>
+                <span class="valor-barra" id="valor-servicio"><?= $promediosCategorias['servicio'] ?></span>
+            </div>
+
+            <div class="barra-categoria">
+                <span class="etiqueta-barra">Ambiente</span>
+                <div class="barra-fondo"><div class="barra-relleno" id="barra-ambiente" style="width: <?= ($promediosCategorias['ambiente'] / 5) * 100 ?>%"></div></div>
+                <span class="valor-barra" id="valor-ambiente"><?= $promediosCategorias['ambiente'] ?></span>
+            </div>
+        </section>
 
         <section class="formulario-resena">
             <h2>Deja tu reseña</h2>
 
-            <?php if ($exito): ?>
-                <p class="mensaje-exito">¡Gracias por tu reseña!</p>
-            <?php endif; ?>
+            <div id="mensaje-resena"></div>
 
-            <?php if (count($errores) > 0): ?>
-                <ul class="mensaje-error">
-                    <?php foreach ($errores as $error): ?>
-                        <li><?= $error ?></li>
-                    <?php endforeach; ?>
-                </ul>
-            <?php endif; ?>
+            <form id="formulario-resena" enctype="multipart/form-data" class="formulario-lugar">
+                <input type="hidden" name="lugar_id" value="<?= $lugar['id'] ?>">
 
-            <form method="POST" enctype="multipart/form-data" class="formulario-lugar">
-    <label for="autor">Tu nombre</label>
+                <label for="autor">Tu nombre</label>
                 <input type="text" id="autor" name="autor" required>
 
                 <label>Comida / producto</label>
@@ -229,7 +155,8 @@ $promediosCategorias = promediosPorCategoria($resenas);
 
                 <label for="comentario">Comentario (opcional)</label>
                 <textarea id="comentario" name="comentario" rows="3"></textarea>
-                  <label for="imagen_resena">Agrega una foto (opcional)</label>
+
+                <label for="imagen_resena">Agrega una foto (opcional)</label>
                 <input type="file" id="imagen_resena" name="imagen" accept="image/*">
 
                 <button type="submit">Publicar reseña</button>
@@ -237,49 +164,51 @@ $promediosCategorias = promediosPorCategoria($resenas);
         </section>
 
         <section class="lista-resenas">
-            <h2>Reseñas (<?= count($resenas) ?>)</h2>
+            <h2>Reseñas (<span id="conteo-resenas"><?= count($resenas) ?></span>)</h2>
 
-            <?php if (count($resenas) === 0): ?>
-                <p>Sé el primero en reseñar este lugar.</p>
-            <?php else: ?>
-                <?php foreach ($resenas as $resena): ?>
-                    <article class="tarjeta-resena">
-                        <div class="cabecera-resena">
-                            <strong><?= limpiar($resena['autor']) ?></strong>
-                            <?php if ($resena['emoji']): ?>
-                                <span class="emoji-resena"><?= $resena['emoji'] ?></span>
+            <div id="contenedor-resenas">
+                <?php if (count($resenas) === 0): ?>
+                    <p id="mensaje-sin-resenas">Sé el primero en reseñar este lugar.</p>
+                <?php else: ?>
+                    <?php foreach ($resenas as $resena): ?>
+                        <article class="tarjeta-resena">
+                            <div class="cabecera-resena">
+                                <strong><?= limpiar($resena['autor']) ?></strong>
+                                <?php if ($resena['emoji']): ?>
+                                    <span class="emoji-resena"><?= $resena['emoji'] ?></span>
+                                <?php endif; ?>
+                            </div>
+                            <div class="detalle-ratings">
+                                <span>Comida: <?= str_repeat('★', $resena['rating_comida']) . str_repeat('☆', 5 - $resena['rating_comida']) ?></span>
+                                <span>Servicio: <?= str_repeat('★', $resena['rating_servicio']) . str_repeat('☆', 5 - $resena['rating_servicio']) ?></span>
+                                <span>Ambiente: <?= str_repeat('★', $resena['rating_ambiente']) . str_repeat('☆', 5 - $resena['rating_ambiente']) ?></span>
+                            </div>
+                            <?php if ($resena['imagen']): ?>
+                                <img src="<?= limpiar($resena['imagen']) ?>" alt="Foto de la reseña" class="foto-resena foto-clickeable">
                             <?php endif; ?>
-                        </div>
-                        <div class="detalle-ratings">
-                            <span>Comida: <?= str_repeat('★', $resena['rating_comida']) . str_repeat('☆', 5 - $resena['rating_comida']) ?></span>
-                            <span>Servicio: <?= str_repeat('★', $resena['rating_servicio']) . str_repeat('☆', 5 - $resena['rating_servicio']) ?></span>
-                            <span>Ambiente: <?= str_repeat('★', $resena['rating_ambiente']) . str_repeat('☆', 5 - $resena['rating_ambiente']) ?></span>
-                        </div>
-                        <?php if ($resena['imagen']): ?>
-                            <img src="<?= limpiar($resena['imagen']) ?>" alt="Foto de la reseña" class="foto-resena foto-clickeable">
-                        <?php endif; ?>
-                        <?php if ($resena['comentario']): ?>
-                            <p class="comentario-resena"><?= $resena['comentario'] ?></p>
-                        <?php endif; ?>
-                        <time><?= date('d/m/Y', strtotime($resena['creado_en'])) ?></time>
-                    </article>
-                <?php endforeach; ?>
-            <?php endif; ?>
+                            <?php if ($resena['comentario']): ?>
+                                <p class="comentario-resena"><?= $resena['comentario'] ?></p>
+                            <?php endif; ?>
+                            <time><?= date('d/m/Y', strtotime($resena['creado_en'])) ?></time>
+                        </article>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
         </section>
 
         <?php if ($lugar['recomendaciones']): ?>
-<section class="recomendaciones-lugar">
-    <h2>Recomendaciones</h2>
-    <p><?= nl2br($lugar['recomendaciones']) ?></p>
-</section>
-<?php endif; ?>
+        <section class="recomendaciones-lugar">
+            <h2>Recomendaciones</h2>
+            <p><?= nl2br($lugar['recomendaciones']) ?></p>
+        </section>
+        <?php endif; ?>
     </main>
-<div id="lightbox" class="lightbox oculto">
+
+    <div id="lightbox" class="lightbox oculto">
         <span class="cerrar-lightbox">&times;</span>
         <img id="lightbox-img" src="" alt="Foto ampliada">
     </div>
 
     <script src="js/app.js"></script>
-</body>    
 </body>
 </html>

@@ -555,3 +555,8 @@ body {
     from { opacity: 0; }
     to { opacity: 1; }
 }
+
+.formulario-lugar button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
