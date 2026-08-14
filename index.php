@@ -63,18 +63,17 @@ if ($ordenandoPorCercania) {
     <div class="franja-vueltiada"></div>
 
     <main class="contenedor-lugares">
+        <div class="barra-busqueda">
+            <input type="text" id="buscador-lugares" placeholder="🔍 Buscar por nombre o categoría..." autocomplete="off">
+        </div>
+
         <?php if ($ordenandoPorCercania): ?>
-            <p class="aviso-orden-cercania">
-                Ordenado por cercanía a tu ubicación.
-                <a href="index.php">Quitar filtro</a>
-            </p>
-        <?php endif; ?>
 
         <?php if (count($lugares) === 0): ?>
             <p>Todavía no hay lugares registrados.</p>
         <?php else: ?>
             <?php foreach ($lugares as $lugar): ?>
-                <a href="lugar.php?id=<?= $lugar['id'] ?>" class="tarjeta-lugar">
+                <a href="lugar.php?id=<?= $lugar['id'] ?>" class="tarjeta-lugar" data-nombre="<?= strtolower(limpiar($lugar['nombre'])) ?>" data-categoria="<?= strtolower(limpiar($lugar['categoria'])) ?>">
                     <div class="imagen-lugar <?= $lugar['imagen'] ? '' : 'sin-imagen' ?>"
                          <?php if ($lugar['imagen']): ?>
                             style="background-image: url('<?= limpiar($lugar['imagen']) ?>');"
@@ -98,6 +97,8 @@ if ($ordenandoPorCercania) {
                     </div>
                 </a>
             <?php endforeach; ?>
+            <p id="mensaje-sin-resultados" class="mensaje-sin-resultados oculto">No encontramos lugares que coincidan con tu búsqueda.</p>
+        <?php endif; ?>
         <?php endif; ?>
     </main>
     <script src="js/app.js"></script>

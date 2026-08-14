@@ -76,6 +76,30 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // --- Búsqueda en vivo ---
+    const buscador = document.getElementById('buscador-lugares');
+    if (buscador) {
+        const tarjetasBuscables = document.querySelectorAll('.tarjeta-lugar');
+        const mensajeSinResultados = document.getElementById('mensaje-sin-resultados');
+
+        buscador.addEventListener('input', () => {
+            const termino = buscador.value.trim().toLowerCase();
+            let visibles = 0;
+
+            tarjetasBuscables.forEach((tarjeta) => {
+                const coincide = tarjeta.dataset.nombre.includes(termino)
+                    || tarjeta.dataset.categoria.includes(termino);
+
+                tarjeta.style.display = coincide ? '' : 'none';
+                if (coincide) visibles++;
+            });
+
+            if (mensajeSinResultados) {
+                mensajeSinResultados.classList.toggle('oculto', visibles > 0);
+            }
+        });
+    }
+
     // --- Envío de reseñas por AJAX ---
     const formularioResena = document.getElementById('formulario-resena');
     if (!formularioResena) return; // Estamos en index.php, no hay nada más que hacer.
