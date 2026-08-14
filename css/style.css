@@ -107,6 +107,7 @@ body {
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
+    position: relative;
 }
 
 .imagen-lugar.sin-imagen {
@@ -559,4 +560,66 @@ body {
 .formulario-lugar button:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+}
+
+.botones-cabecera {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.boton-secundario {
+    background-color: transparent;
+    color: white;
+    border: 2px solid var(--dorado);
+    font-family: inherit;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.boton-secundario:hover {
+    background-color: var(--dorado);
+    color: var(--verde-oscuro);
+}
+
+.boton-secundario:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.mensaje-geo {
+    margin-top: 12px;
+    font-size: 0.85rem;
+    color: var(--dorado);
+    min-height: 1.2em;
+}
+
+.aviso-orden-cercania {
+    grid-column: 1 / -1;
+    background-color: white;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.aviso-orden-cercania a {
+    color: var(--terracota);
+    font-weight: bold;
+    margin-left: 8px;
+}
+
+.distancia-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(232, 169, 62, 0.95);
+    color: var(--negro-vueltiao);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: bold;
 }

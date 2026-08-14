@@ -38,6 +38,44 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // --- Geolocalización: "lugares cerca de mí" ---
+    // (Este bloque va ANTES del bloque de AJAX a propósito: el bloque de
+    // AJAX tiene un "return" temprano cuando no está en lugar.php, y eso
+    // cortaría la ejecución antes de llegar aquí si lo dejáramos después.)
+    const btnCercaMi = document.getElementById('btn-cerca-mi');
+    const mensajeGeo = document.getElementById('mensaje-geo');
+
+    if (btnCercaMi) {
+        btnCercaMi.addEventListener('click', () => {
+            if (!navigator.geolocation) {
+                mensajeGeo.textContent = 'Tu navegador no soporta geolocalización.';
+                return;
+            }
+
+            btnCercaMi.disabled = true;
+            btnCercaMi.textContent = 'Buscando tu ubicación...';
+            mensajeGeo.textContent = '';
+
+            navigator.geolocation.getCurrentPosition(
+                (posicion) => {
+                    const lat = posicion.coords.latitude;
+                    const lng = posicion.coords.longitude;
+                    window.location.href = `index.php?lat=${lat}&lng=${lng}`;
+                },
+                (error) => {
+                    btnCercaMi.disabled = false;
+                    btnCercaMi.textContent = '📍 Lugares cerca de mí';
+
+                    if (error.code === error.PERMISSION_DENIED) {
+                        mensajeGeo.textContent = 'Necesitas permitir el acceso a tu ubicación para usar esta función.';
+                    } else {
+                        mensajeGeo.textContent = 'No se pudo obtener tu ubicación, intenta de nuevo.';
+                    }
+                }
+            );
+        });
+    }
+
     // --- Envío de reseñas por AJAX ---
     const formularioResena = document.getElementById('formulario-resena');
     if (!formularioResena) return; // Estamos en index.php, no hay nada más que hacer.
@@ -126,13 +164,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            // Quitamos el mensaje de "sé el primero" si estaba presente.
             const mensajeSinResenas = document.getElementById('mensaje-sin-resenas');
             if (mensajeSinResenas) mensajeSinResenas.remove();
 
             contenedorResenas.prepend(crearTarjetaResena(datos.resena));
 
-            // Actualizamos contadores y promedios en toda la página.
             document.getElementById('conteo-resenas').textContent = datos.total_resenas;
             const conteoCabecera = document.getElementById('conteo-resenas-cabecera');
             if (conteoCabecera) conteoCabecera.textContent = datos.total_resenas;
