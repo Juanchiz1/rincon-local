@@ -3,3 +3,4 @@ config.local.php
 vendor/
 .DS_Store
 *.log
+includes/db.php
