@@ -1,9 +1,9 @@
 <?php
 
-$host = 'yourhost';
-$dbname = 'yourdatabase';
-$usuario = 'yourusername';
-$password = 'yourpassword';
+$host = 'localhost';
+$dbname = 'rincon_local';
+$usuario = 'root';
+$password = '';
 
 try {
     $pdo = new PDO(
