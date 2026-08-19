@@ -801,3 +801,42 @@ body {
     border-radius: 8px;
     margin-bottom: 8px;
 }
+
+.galeria-admin-editar {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.miniatura-eliminable {
+    display: block;
+    cursor: pointer;
+}
+
+.miniatura-eliminable img {
+    width: 100%;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.etiqueta-eliminar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    color: #d9534f;
+    margin-top: 4px;
+}
+
+.tarjeta-resena-admin {
+    max-width: 500px;
+    margin: 0 auto 16px;
+}
+
+.lugar-de-la-resena {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 8px;
+}

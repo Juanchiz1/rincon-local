@@ -23,8 +23,8 @@ requerirLogin();
         <h2>📍 Lugares</h2>
             <p>Editar o eliminar lugares registrados</p>
         </a>
-        <a href="#" class="tarjeta-panel">
-            <h2>💬 Reseñas</h2>
+        <a href="resenas.php" class="tarjeta-panel">
+    <h2>💬 Reseñas</h2>
             <p>Moderar comentarios de usuarios</p>
         </a>
         <a href="#" class="tarjeta-panel">

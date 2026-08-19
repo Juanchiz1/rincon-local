@@ -22,6 +22,13 @@ if ($esEdicion) {
     $lugar = $encontrado;
 }
 
+$fotosGaleria = [];
+if ($esEdicion) {
+    $stmtFotos = $pdo->prepare("SELECT * FROM lugares_fotos WHERE lugar_id = ? ORDER BY orden ASC");
+    $stmtFotos->execute([$id]);
+    $fotosGaleria = $stmtFotos->fetchAll();
+}
+
 $errores = [];
 $exito = false;
 
@@ -72,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    if (count($errores) === 0) {
+        if (count($errores) === 0) {
         if ($esEdicion) {
             $stmt = $pdo->prepare(
                 "UPDATE lugares SET
@@ -87,6 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $recomendaciones !== '' ? $recomendaciones : null,
                 $id,
             ]);
+            $lugarId = $id;
         } else {
             $stmt = $pdo->prepare(
                 "INSERT INTO lugares
@@ -99,6 +107,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $horarioApertura !== '' ? $horarioApertura : null, $horarioCierre !== '' ? $horarioCierre : null,
                 $recomendaciones !== '' ? $recomendaciones : null,
             ]);
+            $lugarId = $pdo->lastInsertId();
+        }
+
+        // Elimina las fotos de galería que el admin marcó para borrar.
+        if (!empty($_POST['eliminar_foto']) && is_array($_POST['eliminar_foto'])) {
+            $stmtEliminarFoto = $pdo->prepare("DELETE FROM lugares_fotos WHERE id = ? AND lugar_id = ?");
+            foreach ($_POST['eliminar_foto'] as $fotoId) {
+                if (is_numeric($fotoId)) {
+                    $stmtEliminarFoto->execute([$fotoId, $lugarId]);
+                }
+            }
+        }
+
+        // Sube las fotos nuevas de galería, si se seleccionó alguna.
+        if (isset($_FILES['galeria']) && is_array($_FILES['galeria']['name'])) {
+            $extensionesPermitidas = ['jpg', 'jpeg', 'png', 'webp'];
+            $tamanoMaximo = 5 * 1024 * 1024;
+            $stmtOrden = $pdo->prepare("SELECT COALESCE(MAX(orden), -1) FROM lugares_fotos WHERE lugar_id = ?");
+            $stmtOrden->execute([$lugarId]);
+            $siguienteOrden = $stmtOrden->fetchColumn() + 1;
+
+            $stmtFoto = $pdo->prepare("INSERT INTO lugares_fotos (lugar_id, ruta_imagen, orden) VALUES (?, ?, ?)");
+
+            foreach ($_FILES['galeria']['name'] as $i => $nombreOriginal) {
+                if ($_FILES['galeria']['error'][$i] !== UPLOAD_ERR_OK) {
+                    continue;
+                }
+
+                $extension = strtolower(pathinfo($nombreOriginal, PATHINFO_EXTENSION));
+                if (!in_array($extension, $extensionesPermitidas)) {
+                    continue;
+                }
+                if ($_FILES['galeria']['size'][$i] > $tamanoMaximo) {
+                    continue;
+                }
+
+                $nombreArchivo = uniqid('galeria_') . '.' . $extension;
+                $rutaDestino = __DIR__ . '/../uploads/' . $nombreArchivo;
+
+                if (move_uploaded_file($_FILES['galeria']['tmp_name'][$i], $rutaDestino)) {
+                    $stmtFoto->execute([$lugarId, 'uploads/' . $nombreArchivo, $siguienteOrden]);
+                    $siguienteOrden++;
+                }
+            }
         }
 
         header('Location: lugares.php');
@@ -166,6 +218,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <img src="../<?= limpiar($lugar['imagen']) ?>" alt="Portada actual" class="miniatura-actual">
             <?php endif; ?>
             <input type="file" id="imagen" name="imagen" accept="image/*">
+                        <?php if ($esEdicion && count($fotosGaleria) > 0): ?>
+            <label>Fotos de la galería actual (marca las que quieras eliminar)</label>
+            <div class="galeria-admin-editar">
+                <?php foreach ($fotosGaleria as $foto): ?>
+                    <label class="miniatura-eliminable">
+                        <img src="../<?= limpiar($foto['ruta_imagen']) ?>" alt="Foto de galería">
+                        <span class="etiqueta-eliminar">
+                            <input type="checkbox" name="eliminar_foto[]" value="<?= $foto['id'] ?>"> Eliminar
+                        </span>
+                    </label>
+                <?php endforeach; ?>
+            </div>
+            <?php endif; ?>
+
+            <label for="galeria">Agregar más fotos a la galería (opcional, puedes elegir varias)</label>
+            <input type="file" id="galeria" name="galeria[]" accept="image/*" multiple>
 
             <label for="latitud">Latitud</label>
             <input type="text" id="latitud" name="latitud" value="<?= $lugar['latitud'] ?? '' ?>">
