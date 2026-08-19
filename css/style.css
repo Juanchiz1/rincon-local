@@ -669,3 +669,63 @@ body {
 .mensaje-sin-resultados.oculto {
     display: none;
 }
+
+.cabecera-admin {
+    background: linear-gradient(135deg, var(--verde-sinu), var(--verde-oscuro));
+    color: white;
+    padding: 30px 20px;
+    text-align: center;
+}
+
+.cabecera-admin p {
+    margin-top: 6px;
+    opacity: 0.9;
+    font-size: 0.9rem;
+}
+
+.link-logout {
+    color: var(--dorado);
+    font-weight: bold;
+}
+
+.mensaje-error-simple {
+    background-color: #fbdcdc;
+    color: #7a1f1f;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+}
+
+.panel-admin {
+    max-width: 700px;
+    margin: 30px auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.tarjeta-panel {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: transform 0.15s ease;
+}
+
+.tarjeta-panel:hover {
+    transform: translateY(-3px);
+}
+
+.tarjeta-panel h2 {
+    color: var(--verde-oscuro);
+    margin-bottom: 6px;
+    font-size: 1.1rem;
+}
+
+.tarjeta-panel p {
+    font-size: 0.85rem;
+    color: #777;
+}

@@ -1,10 +1,9 @@
 <?php
 
-
-$host = 'sql113.infinityfree.com';
-$dbname = 'if0_42664619_rinconlocal';
-$usuario = 'if0_42664619';
-$password = 'oUdTFxMTx9g';
+$host = 'localhost';
+$dbname = 'rincon_local';
+$usuario = 'root';
+$password = '';
 
 try {
     $pdo = new PDO(
