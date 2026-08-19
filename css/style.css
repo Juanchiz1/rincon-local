@@ -729,3 +729,75 @@ body {
     font-size: 0.85rem;
     color: #777;
 }
+
+.contenedor-admin-tabla {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.boton-nuevo-lugar {
+    display: inline-block;
+    margin-bottom: 16px;
+}
+
+.tabla-admin {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.tabla-admin th,
+.tabla-admin td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+    font-size: 0.9rem;
+}
+
+.tabla-admin th {
+    background-color: var(--verde-sinu);
+    color: white;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+.celda-acciones {
+    display: flex;
+    gap: 8px;
+}
+
+.form-eliminar-inline {
+    display: inline;
+}
+
+.boton-tabla {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.boton-editar {
+    background-color: var(--dorado);
+    color: var(--negro-vueltiao);
+}
+
+.boton-eliminar {
+    background-color: #d9534f;
+    color: white;
+}
+
+.miniatura-actual {
+    width: 100px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}

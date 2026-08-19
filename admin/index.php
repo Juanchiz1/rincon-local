@@ -19,8 +19,8 @@ requerirLogin();
     </header>
 
     <main class="panel-admin">
-        <a href="#" class="tarjeta-panel">
-            <h2>📍 Lugares</h2>
+        <a href="lugares.php" class="tarjeta-panel">
+        <h2>📍 Lugares</h2>
             <p>Editar o eliminar lugares registrados</p>
         </a>
         <a href="#" class="tarjeta-panel">
