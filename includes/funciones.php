@@ -61,3 +61,11 @@ function promediosPorCategoria(array $resenas)
         'ambiente' => round($sumaAmbiente / $total, 1),
     ];
 }
+
+function obtenerConfiguracion($pdo, $clave, $valorDefecto = null)
+{
+    $stmt = $pdo->prepare("SELECT valor FROM configuracion WHERE clave = ?");
+    $stmt->execute([$clave]);
+    $resultado = $stmt->fetchColumn();
+    return $resultado !== false ? $resultado : $valorDefecto;
+}

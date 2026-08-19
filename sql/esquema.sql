@@ -32,3 +32,10 @@ INSERT INTO lugares (nombre, categoria, direccion, latitud, longitud) VALUES
 ('Pasaje del Sol', 'Zona de bares y restaurantes', 'Zona norte, Montería', 8.7550, -75.8820),
 ('Parque Simón Bolívar', 'Parque', 'Centro de Montería', 8.7530, -75.8810),
 ('Restaurante Baalbeck', 'Restaurante - comida árabe', 'Montería, Córdoba', 8.7540, -75.8790);
+
+CREATE TABLE configuracion (
+    clave VARCHAR(50) PRIMARY KEY,
+    valor VARCHAR(255) NOT NULL
+);
+
+INSERT INTO configuracion (clave, valor) VALUES ('banner_sitio', 'assets/banner_monteria_collage.jpg');

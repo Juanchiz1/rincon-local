@@ -27,8 +27,8 @@ requerirLogin();
     <h2>💬 Reseñas</h2>
             <p>Moderar comentarios de usuarios</p>
         </a>
-        <a href="#" class="tarjeta-panel">
-            <h2>🖼️ Banner</h2>
+        <a href="banner.php" class="tarjeta-panel">
+    <h2>🖼️ Banner</h2>
             <p>Cambiar la foto de la cabecera principal</p>
         </a>
     </main>

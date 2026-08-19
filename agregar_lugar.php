@@ -1,6 +1,7 @@
 <?php
 require 'includes/db.php';
 require 'includes/funciones.php';
+$bannerSitio = obtenerConfiguracion($pdo, 'banner_sitio', 'assets/banner_monteria_collage.jpg');
 
 $errores = [];
 $exito = false;
@@ -126,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <header class="cabecera">
+        <header class="cabecera" style="--banner-url: url('<?= limpiar($bannerSitio) ?>');">
         <h1>Agregar un nuevo lugar</h1>
         <a href="index.php" class="boton-agregar">← Volver al listado</a>
     </header>

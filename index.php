@@ -1,6 +1,7 @@
 <?php
 require 'includes/db.php';
 require 'includes/funciones.php';
+$bannerSitio = obtenerConfiguracion($pdo, 'banner_sitio', 'assets/banner_monteria_collage.jpg');
 
 $stmt = $pdo->query("SELECT * FROM lugares ORDER BY nombre ASC");
 $lugares = $stmt->fetchAll();
@@ -51,7 +52,7 @@ if ($ordenandoPorCercania) {
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <header class="cabecera">
+        <header class="cabecera" style="--banner-url: url('<?= limpiar($bannerSitio) ?>');">
         <h1>RincónLocal</h1>
         <p>Descubre y reseña los mejores rincones de Montería</p>
         <div class="botones-cabecera">

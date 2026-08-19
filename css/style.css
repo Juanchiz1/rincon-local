@@ -24,7 +24,7 @@ body {
 .cabecera {
     background:
         linear-gradient(135deg, rgba(18, 51, 44, 0.88), rgba(18, 51, 44, 0.72)),
-        url('../assets/banner_monteria_collage.jpg');
+        var(--banner-url, url('../assets/banner_monteria_collage.jpg'));
     background-size: cover;
     background-position: center 40%;
     background-repeat: no-repeat;
@@ -839,4 +839,18 @@ body {
     font-size: 0.85rem;
     color: #666;
     margin-bottom: 8px;
+}
+
+.etiqueta-banner-actual {
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: var(--verde-oscuro);
+}
+
+.vista-previa-banner {
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 20px;
 }
