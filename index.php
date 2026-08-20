@@ -52,7 +52,7 @@ if ($ordenandoPorCercania) {
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-        <header class="cabecera" style="--banner-url: url('<?= limpiar($bannerSitio) ?>');">
+    <header class="cabecera" style="--banner-url: url('/<?= limpiar($bannerSitio) ?>');">
         <h1>RincónLocal</h1>
         <p>Descubre y reseña los mejores rincones de Montería</p>
         <div class="botones-cabecera">
