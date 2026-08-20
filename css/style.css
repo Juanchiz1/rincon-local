@@ -610,6 +610,47 @@ body {
     min-height: 1.2em;
 }
 
+.ayuda-mapa {
+    font-size: 0.85rem;
+    color: #6b6259;
+    margin-bottom: 10px;
+}
+
+.boton-ubicacion-form {
+    background-color: transparent;
+    color: var(--verde-sinu);
+    border: 2px solid var(--verde-sinu);
+    border-radius: 30px;
+    padding: 10px 18px;
+    font-size: 0.95rem;
+    font-weight: bold;
+    cursor: pointer;
+    align-self: flex-start;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.boton-ubicacion-form:hover {
+    background-color: var(--verde-sinu);
+    color: white;
+}
+
+.boton-ubicacion-form:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+#mensaje-geo-form {
+    color: var(--terracota);
+}
+
+.mapa-seleccionar {
+    height: 300px;
+    width: 100%;
+    border-radius: 12px;
+    margin-top: 12px;
+    border: 1px solid #ddd;
+}
+
 .aviso-orden-cercania {
     grid-column: 1 / -1;
     background-color: white;

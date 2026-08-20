@@ -125,6 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agregar lugar - RincónLocal</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 </head>
 <body>
         <header class="cabecera" style="--banner-url: url('/<?= limpiar($bannerSitio) ?>');">
@@ -173,15 +174,107 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label for="galeria">Fotos adicionales (opcional, puedes elegir varias)</label>
                 <input type="file" id="galeria" name="galeria[]" accept="image/*" multiple>
 
-                <label for="latitud">Latitud (opcional)</label>
-                <input type="text" id="latitud" name="latitud" placeholder="8.7500" value="<?= $_POST['latitud'] ?? '' ?>">
+                <label>Ubicación en el mapa (opcional)</label>
+                <p class="ayuda-mapa">Toca el botón para usar tu ubicación actual, o haz clic/toca directamente en el mapa para marcar el punto exacto.</p>
 
-                <label for="longitud">Longitud (opcional)</label>
-                <input type="text" id="longitud" name="longitud" placeholder="-75.8800" value="<?= $_POST['longitud'] ?? '' ?>">
+                <button type="button" id="btn-mi-ubicacion" class="boton-ubicacion-form">📍 Usar mi ubicación</button>
+                <p id="mensaje-geo-form" class="mensaje-geo"></p>
+
+                <div id="mapa-seleccionar" class="mapa-seleccionar"></div>
+
+                <input type="hidden" id="latitud" name="latitud" value="<?= $_POST['latitud'] ?? '' ?>">
+                <input type="hidden" id="longitud" name="longitud" value="<?= $_POST['longitud'] ?? '' ?>">
 
                 <button type="submit">Guardar lugar</button>
             </form>
         <?php endif; ?>
     </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Centro por defecto: Montería, para que el mapa no arranque en el medio del océano.
+            const centroDefecto = [8.7500, -75.8800];
+            const inputLat = document.getElementById('latitud');
+            const inputLng = document.getElementById('longitud');
+            const btnUbicacion = document.getElementById('btn-mi-ubicacion');
+            const mensajeGeoForm = document.getElementById('mensaje-geo-form');
+
+            const latInicial = parseFloat(inputLat.value);
+            const lngInicial = parseFloat(inputLng.value);
+            const hayUbicacionGuardada = !isNaN(latInicial) && !isNaN(lngInicial);
+
+            const mapa = L.map('mapa-seleccionar').setView(
+                hayUbicacionGuardada ? [latInicial, lngInicial] : centroDefecto,
+                hayUbicacionGuardada ? 16 : 13
+            );
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; colaboradores de OpenStreetMap',
+                maxZoom: 19,
+            }).addTo(mapa);
+
+            let marcador = null;
+
+            function colocarMarcador(lat, lng) {
+                if (marcador) {
+                    marcador.setLatLng([lat, lng]);
+                } else {
+                    marcador = L.marker([lat, lng], { draggable: true }).addTo(mapa);
+                    marcador.on('dragend', function () {
+                        const posicion = marcador.getLatLng();
+                        guardarCoordenadas(posicion.lat, posicion.lng);
+                    });
+                }
+                guardarCoordenadas(lat, lng);
+            }
+
+            function guardarCoordenadas(lat, lng) {
+                inputLat.value = lat.toFixed(6);
+                inputLng.value = lng.toFixed(6);
+            }
+
+            if (hayUbicacionGuardada) {
+                colocarMarcador(latInicial, lngInicial);
+            }
+
+            // Clic o toque en el mapa: mueve el marcador ahí.
+            mapa.on('click', function (evento) {
+                colocarMarcador(evento.latlng.lat, evento.latlng.lng);
+            });
+
+            // Botón "usar mi ubicación": centra el mapa y coloca el marcador con el GPS del navegador.
+            if (btnUbicacion) {
+                btnUbicacion.addEventListener('click', function () {
+                    if (!navigator.geolocation) {
+                        mensajeGeoForm.textContent = 'Tu navegador no soporta geolocalización, marca el punto directamente en el mapa.';
+                        return;
+                    }
+
+                    btnUbicacion.disabled = true;
+                    btnUbicacion.textContent = 'Buscando tu ubicación...';
+                    mensajeGeoForm.textContent = '';
+
+                    navigator.geolocation.getCurrentPosition(
+                        function (posicion) {
+                            const lat = posicion.coords.latitude;
+                            const lng = posicion.coords.longitude;
+                            mapa.setView([lat, lng], 17);
+                            colocarMarcador(lat, lng);
+                            btnUbicacion.disabled = false;
+                            btnUbicacion.textContent = '📍 Usar mi ubicación';
+                        },
+                        function (error) {
+                            btnUbicacion.disabled = false;
+                            btnUbicacion.textContent = '📍 Usar mi ubicación';
+                            mensajeGeoForm.textContent = error.code === error.PERMISSION_DENIED
+                                ? 'Necesitas permitir el acceso a tu ubicación, o marca el punto directamente en el mapa.'
+                                : 'No se pudo obtener tu ubicación, marca el punto directamente en el mapa.';
+                        }
+                    );
+                });
+            }
+        });
+    </script>
 </body>
 </html>
